@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Speed Building Test — Profit & Loss Lecture 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --green: #10b981;
+            --green-light: #ecfdf5;
+            --red: #ef4444;
+            --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            font-size: 15px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        .hidden { display: none !important; }
+
+        /* MODE SELECTION SCREEN */
+        .start-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .start-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 36px 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .brand-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 16px;
+        }
+        .start-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .start-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            padding: 16px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            text-align: left;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .mode-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .mode-icon.quiz { background: #dbeafe; color: #2563eb; }
+        .mode-icon.test { background: #d1fae5; color: #059669; }
+        .mode-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        .mode-info-txt {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .mode-arrow {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* MAIN APP */
+        .quiz-app {
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .quiz-header {
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .hdr-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .hdr-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .hdr-brand-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+        .hdr-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+        .hdr-btn:hover { background: var(--bg-main); }
+        .hdr-timer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* QUESTIONS CONTAINER */
+        .quiz-main {
+            flex: 1;
+            overflow-y: auto;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        .q-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .q-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .q-num-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .q-text {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 22px;
+        }
+        .opts {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .opt:hover:not(.locked) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+        .opt.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .opt.correct {
+            border-color: var(--green);
+            background: var(--green-light);
+        }
+        .opt.wrong {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+        .opt.locked { cursor: default; }
+        .opt-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .opt.selected .opt-letter {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .opt.correct .opt-letter {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+        .opt.wrong .opt-letter {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .opt-text {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .opt-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .opt.correct .opt-tag { background: var(--green); color: #fff; }
+        .opt.wrong .opt-tag { background: var(--red); color: #fff; }
+
+        .sol-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+        }
+        .sol-head {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sol-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* BOTTOM NAV */
+        .quiz-nav {
+            flex-shrink: 0;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+        .nav-btn.prev {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .nav-btn.prev:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn.submit {
+            background: var(--green-light);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .nav-btn.next {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .nav-btn.next:hover { background: var(--primary-hover); }
+
+        /* PALETTE MODAL */
+        .palette-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 150;
+            display: none;
+        }
+        .palette-overlay.open { display: block; }
+        .palette-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: min(340px, 85vw);
+            background: #ffffff;
+            z-index: 160;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .palette-drawer.open { transform: translateX(0); }
+        .pal-head {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 17px;
+        }
+        .pal-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            align-content: start;
+        }
+        .pal-btn {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .pal-btn:hover { transform: scale(1.05); }
+        .pal-btn.answered { background: var(--green); color: #fff; border-color: var(--green); }
+        .pal-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        /* SUBMIT MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 170;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .modal-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+        .modal-stat {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-stat-num { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+        .modal-stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .modal-actions { display: flex; flex-direction: column; gap: 10px; }
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .modal-btn.confirm { background: var(--primary); color: #fff; }
+        .modal-btn.cancel { background: #f1f5f9; color: var(--text-dark); }
+
+        /* RESULTS SCREEN */
+        .results-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 180;
+            display: none;
+            overflow-y: auto;
+            padding: 30px 16px 60px;
+        }
+        .results-screen.open { display: block; }
+        .results-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .res-hero { text-align: center; margin-bottom: 24px; }
+        .res-hero h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+        .res-score-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+        .res-score-val { font-size: 54px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+        .res-score-val span { font-size: 22px; opacity: 0.6; }
+        .res-score-lbl { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .res-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .res-item-val { font-size: 22px; font-weight: 700; }
+        .res-item-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .res-actions { display: flex; flex-direction: column; gap: 10px; }
+        .res-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .res-btn.primary { background: var(--primary); color: #fff; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            background: #0f172a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- START / MODE SELECT -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <div class="brand-icon"><i class="fas fa-hand-holding-dollar"></i></div>
+            <h1 class="start-title">Profit &amp; Loss — Lecture 2</h1>
+            <p class="start-desc">Speed Building Test — Apna preferred mode choose karein.</p>
+            
+            <button class="mode-btn" onclick="startApp('quiz')">
+                <div class="mode-icon quiz"><i class="fas fa-bolt"></i></div>
+                <div>
+                    <div class="mode-name">Practice Mode</div>
+                    <div class="mode-info-txt">Har question ke baad instant solution aur check milega.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+
+            <button class="mode-btn" onclick="startApp('test')">
+                <div class="mode-icon test"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="mode-name">Exam Mode</div>
+                    <div class="mode-info-txt">Real exam environment. Complete scorecard test submit karne par.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div class="quiz-app hidden" id="quizApp">
+        <header class="quiz-header">
+            <div class="quiz-header-inner">
+                <button class="hdr-btn" onclick="openPalette()"><i class="fas fa-th-large"></i></button>
+                <div class="hdr-brand">
+                    <div class="hdr-icon"><i class="fas fa-hand-holding-dollar"></i></div>
+                    <span class="hdr-brand-title">Profit &amp; Loss L-2</span>
+                </div>
+                <div class="hdr-timer">
+                    <i class="fas fa-stopwatch"></i>
+                    <span id="timerText">00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-main" id="quizMain"></main>
+
+        <nav class="quiz-nav" id="quizNav">
+            <div class="quiz-nav-inner">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn submit" onclick="openSubmitModal()">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()">
+                    <span id="nextLabel">Next</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- QUESTION PALETTE -->
+    <div class="palette-overlay" id="paletteOverlay" onclick="closePalette()"></div>
+    <aside class="palette-drawer" id="paletteDrawer">
+        <div class="pal-head">
+            <span>Questions</span>
+            <button onclick="closePalette()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="pal-grid" id="paletteGrid"></div>
+    </aside>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Submit Test?</h3>
+            <div class="modal-stats-grid">
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalAttempted" style="color:var(--green)">0</div>
+                    <div class="modal-stat-label">Attempted</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalUnattempted" style="color:var(--text-muted)">0</div>
+                    <div class="modal-stat-label">Unattempted</div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn confirm" onclick="confirmSubmit()">Yes, Finish Test</button>
+                <button class="modal-btn cancel" onclick="closeSubmitModal()">Resume Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-box" id="resultsInner"></div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check"></i><span id="toastText"></span></div>
+
+    <script>
+        const QUESTIONS = [
+            {
+                q: "A trader sells 180 pens and gains a profit equal to the selling price of 45 pens. What is his profit percentage?<br><br>एक व्यापारी 180 पेन बेचता है और उसे 45 पेन के विक्रय मूल्य के बराबर लाभ होता है। उसका लाभ प्रतिशत क्या है?",
+                o: ["25%", "33.33%", "20%", "40%"],
+                a: 1,
+                s: "Profit = SP of 45<br>SP of 180 - CP of 180 = SP of 45<br>CP of 180 = SP of 135<br>SP / CP = 180 / 135 = 4 / 3<br>Profit % = ((4 - 3) / 3) × 100 = 33.33% (33⅓%)."
+            },
+            {
+                q: "On selling 84 items, a merchant suffers a loss equal to the cost price of 21 items. What is his loss percentage?<br><br>84 वस्तुओं को बेचने पर, एक व्यापारी को 21 वस्तुओं के क्रय मूल्य के बराबर हानि होती है। उसकी हानि प्रतिशत क्या है?",
+                o: ["25%", "20%", "30%", "16.66%"],
+                a: 0,
+                s: "Loss = CP of 21<br>Loss % = (Loss / Total CP) × 100 = (21 / 84) × 100 = 25%."
+            },
+            {
+                q: "A vendor bought 30 tables for ₹45,000 and sold them at a profit equal to the selling price of 6 tables. Find the selling price of one table.<br><br>एक विक्रेता ने ₹45,000 में 30 टेबल खरीदे और उन्हें 6 टेबल के विक्रय मूल्य के बराबर लाभ पर बेच दिया। एक टेबल का विक्रय मूल्य ज्ञात कीजिए।",
+                o: ["₹1,500", "₹1,875", "₹1,800", "₹2,000"],
+                a: 1,
+                s: "Profit = 6 × SP<br>30 × SP - 30 × CP = 6 × SP<br>24 × SP = 30 × CP = ₹45,000<br>SP of 1 table = 45,000 / 24 = ₹1,875."
+            },
+            {
+                q: "If the selling price of an article is tripled, the profit becomes four times. Find the original profit percentage.<br><br>यदि किसी वस्तु का विक्रय मूल्य तीन गुना कर दिया जाए, तो लाभ चार गुना हो जाता है। मूल लाभ प्रतिशत ज्ञात कीजिए।",
+                o: ["100%", "200%", "50%", "150%"],
+                a: 1,
+                s: "New SP = 3 × SP, New Profit = 4 × P<br>New Profit = New SP - CP => 4P = 3(CP + P) - CP<br>4P = 2CP + 3P => P = 2CP<br>Profit % = (P / CP) × 100 = 200%."
+            },
+            {
+                q: "If the selling price is made 3/2 times and the cost price is reduced by 25%, the profit becomes 100%. What was the original profit percentage?<br><br>यदि विक्रय मूल्य को 3/2 गुना कर दिया जाए और क्रय मूल्य में 25% की कमी कर दी जाए, तो लाभ 100% हो जाता है। मूल लाभ प्रतिशत क्या था?",
+                o: ["0%", "10%", "20%", "25%"],
+                a: 0,
+                s: "Let CP = 100. New CP = 75.<br>New Profit is 100%, so New SP = 150.<br>New SP = (3/2) × Original SP => 150 = (3/2) × SP => Original SP = 100.<br>Original CP = 100, Original SP = 100 => Profit = 0%."
+            },
+            {
+                q: "By selling an article at 3/8 of its actual selling price, a person loses 25%. If he sells it at 90% of its actual selling price, what is his profit percentage?<br><br>किसी वस्तु को उसके वास्तविक विक्रय मूल्य के 3/8 पर बेचने पर एक व्यक्ति को 25% की हानि होती है। यदि वह इसे वास्तविक विक्रय मूल्य के 90% पर बेचता है, तो उसका लाभ प्रतिशत क्या होगा?",
+                o: ["80%", "75%", "60%", "50%"],
+                a: 0,
+                s: "Let Actual SP = 80.<br>Given SP = (3/8) × 80 = 30.<br>At 30, loss is 25% => 75% of CP = 30 => CP = 40.<br>If sold at 90% of Actual SP = 0.90 × 80 = 72.<br>Profit = 72 - 40 = 32.<br>Profit % = (32 / 40) × 100 = 80%."
+            },
+            {
+                q: "By selling an article at 40% of its marked price, a trader loses 30%. What will be the profit percentage if sold at 90% of the marked price?<br><br>किसी वस्तु को उसके अंकित मूल्य के 40% पर बेचने पर एक व्यापारी को 30% की हानि होती है। यदि इसे अंकित मूल्य के 90% पर बेचा जाए, तो लाभ प्रतिशत क्या होगा?",
+                o: ["50%", "57.5%", "62.5%", "45%"],
+                a: 1,
+                s: "Let MP = 100.<br>SP1 = 40 => Loss is 30%, so 70% of CP = 40 => CP = 400 / 7.<br>SP2 = 90% of MP = 90.<br>Profit % = ((90 - 400/7) / (400/7)) × 100 = (230 / 400) × 100 = 57.5%."
+            },
+            {
+                q: "A person calculates profit as 1/8th of the selling price. Find his actual profit percentage calculated on cost price.<br><br>एक व्यक्ति विक्रय मूल्य के 1/8 भाग को लाभ के रूप में गिनता है। क्रय मूल्य पर गणना किया गया उसका वास्तविक लाभ प्रतिशत ज्ञात कीजिए।",
+                o: ["12.5%", "14.28%", "11.11%", "16.66%"],
+                a: 1,
+                s: "Let SP = 8 => Profit = 1.<br>CP = SP - Profit = 8 - 1 = 7.<br>Actual Profit % on CP = (1 / 7) × 100 = 14.28% (14 2/7%)."
+            },
+            {
+                q: "A trader sells an article and earns a profit equal to 25% of the selling price. If the cost price increases by 20% and the selling price increases by 10%, what is the new profit percentage?<br><br>एक व्यापारी एक वस्तु बेचता है और विक्रय मूल्य का 25% लाभ कमाता है। यदि क्रय मूल्य में 20% की वृद्धि होती है और विक्रय मूल्य में 10% की वृद्धि होती है, तो नया लाभ प्रतिशत क्या है?",
+                o: ["12.5%", "22.22%", "15%", "18.75%"],
+                a: 1,
+                s: "Let SP = 100 => Profit = 25 => CP = 75.<br>New CP = 75 × 1.20 = 90.<br>New SP = 100 × 1.10 = 110.<br>New Profit = 110 - 90 = 20.<br>New Profit % = (20 / 90) × 100 = 22.22% (22 2/9%)."
+            },
+            {
+                q: "A calculates profit on selling price, while B calculates profit on cost price. Both claim to make 20% profit. If the selling price of both items is the same and the difference in their profit values is ₹80, find the selling price of each item.<br><br>A विक्रय मूल्य पर लाभ की गणना करता है, जबकि B क्रय मूल्य पर लाभ की गणना करता है। दोनों 20% लाभ का दावा करते हैं। यदि दोनों वस्तुओं का विक्रय मूल्य समान है और उनके लाभ मान का अंतर ₹80 है, तो प्रत्येक वस्तु का विक्रय मूल्य ज्ञात कीजिए।",
+                o: ["₹1,600", "₹2,000", "₹2,400", "₹3,000"],
+                a: 2,
+                s: "Let SP = S.<br>A's Profit = 20% of S = S / 5.<br>B calculates 20% on CP => SP = 1.20 × CP => CP = S / 1.2 = 5S / 6.<br>B's Profit = S - 5S/6 = S / 6.<br>Difference = S/5 - S/6 = S / 30 = ₹80 => S = 80 × 30 = ₹2,400."
+            },
+            {
+                q: "A person sold an article at a loss of 20% calculated on the selling price. Find his actual loss percentage on cost price.<br><br>एक व्यक्ति ने विक्रय मूल्य पर गणना किए गए 20% की हानि पर एक वस्तु बेची। क्रय मूल्य पर उसकी वास्तविक हानि प्रतिशत ज्ञात कीजिए।",
+                o: ["16.66%", "25%", "20%", "15%"],
+                a: 0,
+                s: "Let SP = 100 => Loss = 20.<br>CP = SP + Loss = 100 + 20 = 120.<br>Actual Loss % on CP = (20 / 120) × 100 = 16.66% (16⅔%)."
+            },
+            {
+                q: "A shopkeeper sells a book for ₹480 and makes a profit equal to 1/5th of its cost price. What would be his profit percentage if he sells it for ₹520?<br><br>एक दुकानदार एक किताब ₹480 में बेचता है और अपने क्रय मूल्य के 1/5 भाग के बराबर लाभ कमाता है। यदि वह इसे ₹520 में बेचता है, तो उसका लाभ प्रतिशत क्या होगा?",
+                o: ["25%", "30%", "20%", "35%"],
+                a: 1,
+                s: "SP = CP + (1/5)CP = (6/5)CP = ₹480 => CP = (480 × 5) / 6 = ₹400.<br>New SP = ₹520.<br>New Profit = ₹520 - ₹400 = ₹120.<br>New Profit % = (120 / 400) × 100 = 30%."
+            },
+            {
+                q: "A trader bought two identical bicycles. He sold one at a profit of 25% and the other at a loss of 15%. If the total selling price was ₹8,400, what was the cost price of each bicycle?<br><br>एक व्यापारी ने दो समान साइकिलें खरीदीं। उसने एक को 25% लाभ पर और दूसरी को 15% हानि पर बेचा। यदि कुल विक्रय मूल्य ₹8,400 था, तो प्रत्येक साइकिल का क्रय मूल्य क्या था?",
+                o: ["₹4,000", "₹4,200", "₹3,800", "₹3,500"],
+                a: 0,
+                s: "Let CP of each bicycle = C.<br>Total SP = 1.25C + 0.85C = 2.10C = ₹8,400.<br>C = 8,400 / 2.10 = ₹4,000."
+            },
+            {
+                q: "A merchant buys three identical chairs. He sells the first at 10% profit, the second at 20% profit, and the third at a 12% loss. What is his overall profit percentage?<br><br>एक व्यापारी तीन समान कुर्सियां खरीदता है। वह पहली को 10% लाभ पर, दूसरी को 20% लाभ पर और तीसरी को 12% हानि पर बेचता है। उसका कुल लाभ प्रतिशत क्या है?",
+                o: ["5%", "6%", "8%", "10%"],
+                a: 1,
+                s: "Since CP is identical, net % = (10 + 20 - 12) / 3 = 18 / 3 = 6% profit."
+            },
+            {
+                q: "A seller bought 60 shirts for ₹500 each. He sold 3/5th of them at a profit of 20% and the remaining at a loss of 10%. Find his overall profit or loss percentage.<br><br>एक विक्रेता ने ₹500 प्रत्येक की दर से 60 कमीजें खरीदीं। उसने उनमें से 3/5 भाग को 20% लाभ पर और शेष को 10% हानि पर बेचा। उसका कुल लाभ या हानि प्रतिशत ज्ञात कीजिए।",
+                o: ["8% लाभ (Profit)", "6% लाभ (Profit)", "4% लाभ (Profit)", "2% हानि (Loss)"],
+                a: 0,
+                s: "Weight of 1st part = 3/5 = 60%, 2nd part = 2/5 = 40%.<br>Net % = (3/5 × 20%) + (2/5 × -10%) = 12% - 4% = 8% profit."
+            },
+            {
+                q: "A store keeper purchased 80 notebooks at ₹40 each. He sold 50 notebooks at 12% profit and the remaining 30 notebooks at 20% profit. What is his overall profit percentage?<br><br>एक दुकानदार ने ₹40 प्रत्येक की दर से 80 नोटबुक खरीदीं। उसने 50 नोटबुक 12% लाभ पर और शेष 30 नोटबुक 20% लाभ पर बेचीं। उसका कुल लाभ प्रतिशत क्या है?",
+                o: ["15%", "16%", "14%", "18%"],
+                a: 0,
+                s: "Ratio of quantities = 50 : 30 = 5 : 3 (Total = 8 units).<br>Net Profit % = (5 × 12 + 3 × 20) / 8 = (60 + 60) / 8 = 120 / 8 = 15%."
+            },
+            {
+                q: "A trader bought 100 apples. He sold 40% of them at 25% profit, 30% of them at 10% profit, and the rest at a 15% loss. What is his net profit or loss percentage?<br><br>एक व्यापारी ने 100 सेब खरीदे। उसने 40% सेब 25% लाभ पर, 30% सेब 10% लाभ पर और शेष को 15% हानि पर बेचा। उसका शुद्ध लाभ या हानि प्रतिशत क्या है?",
+                o: ["8.5% लाभ (Profit)", "7.5% लाभ (Profit)", "10% लाभ (Profit)", "5% हानि (Loss)"],
+                a: 0,
+                s: "Remaining = 100 - 40 - 30 = 30%.<br>Net % = (0.40 × 25) + (0.30 × 10) + (0.30 × -15) = 10 + 3 - 4.5 = 8.5% profit."
+            },
+            {
+                q: "A shopkeeper buys two fans at ₹1,500 each. He sells the first at 18% profit and the second at 8% loss, but offers a cashback of ₹50 on the first fan. What is his net profit in rupees?<br><br>एक दुकानदार ₹1,500 प्रत्येक की दर से दो पंखे खरीदता है। वह पहले को 18% लाभ पर और दूसरे को 8% हानि पर बेचता है, लेकिन पहले पंखे पर ₹50 का कैशबैक देता है। रुपयों में उसका शुद्ध लाभ क्या है?",
+                o: ["₹100", "₹120", "₹150", "₹80"],
+                a: 0,
+                s: "Profit on 1st fan = 18% of 1500 = ₹270.<br>Cashback = ₹50 => Net profit on 1st = 270 - 50 = ₹220.<br>Loss on 2nd fan = 8% of 1500 = ₹120.<br>Total Net Profit = ₹220 - ₹120 = ₹100."
+            },
+            {
+                q: "Two items are sold at ₹6,000 each. On one item, the seller makes a 15% profit, and on the other, he suffers a 15% loss. What is his overall percentage profit or loss?<br><br>दो वस्तुएं प्रत्येक ₹6,000 में बेची जाती हैं। एक वस्तु पर विक्रेता को 15% लाभ होता है और दूसरी पर 15% की हानि होती है। उसका कुल प्रतिशत लाभ या हानि क्या है?",
+                o: ["2.25% लाभ (Profit)", "2.25% हानि (Loss)", "3% हानि (Loss)", "न लाभ, न हानि (No profit, no loss)"],
+                a: 1,
+                s: "When SP of two items is identical with equal profit and loss percentage x%, there is always a loss.<br>Loss % = x² / 100 = 15² / 100 = 225 / 100 = 2.25% loss."
+            },
+            {
+                q: "A shopkeeper sold two mobile phones for ₹12,000 each. On one, he gained 20%, and on the other, he lost 20%. What was his overall loss in rupees?<br><br>एक दुकानदार ने दो मोबाइल फोन प्रत्येक ₹12,000 में बेचे। एक पर उसे 20% लाभ हुआ और दूसरे पर 20% हानि हुई। रुपयों में उसकी कुल हानि क्या थी?",
+                o: ["₹1,000", "₹800", "₹1,200", "₹500"],
+                a: 0,
+                s: "Total SP = 2 × 12,000 = ₹24,000.<br>Loss % = 20² / 100 = 4% = 1/25.<br>SP corresponds to 24 units => 24 units = ₹24,000 => 1 unit (Loss) = ₹1,000."
+            }
+        ];
+
+        const state = {
+            current: 0,
+            answers: new Array(QUESTIONS.length).fill(null),
+            locked: new Array(QUESTIONS.length).fill(false),
+            visited: new Array(QUESTIONS.length).fill(false),
+            mode: 'test',
+            startTime: null,
+            timerInterval: null,
+            elapsed: 0
+        };
+
+        function $(id) { return document.getElementById(id); }
+
+        function toast(msg) {
+            const t = $('toast');
+            $('toastText').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function startApp(mode) {
+            state.mode = mode;
+            $('startScreen').classList.add('hidden');
+            $('quizApp').classList.remove('hidden');
+            state.startTime = Date.now();
+            state.visited[0] = true;
+            state.timerInterval = setInterval(() => {
+                state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                $('timerText').textContent = formatTime(state.elapsed);
+            }, 1000);
+            renderQuestion();
+            buildPalette();
+        }
+
+        function renderQuestion() {
+            const i = state.current;
+            const q = QUESTIONS[i];
+            const isQuiz = state.mode === 'quiz';
+            const locked = state.locked[i];
+            const userAns = state.answers[i];
+
+            let optsHtml = '';
+            q.o.forEach((opt, idx) => {
+                let cls = '';
+                let tag = '';
+                if (isQuiz && locked) {
+                    if (idx === q.a) { cls = 'correct'; tag = '<span class="opt-tag">Correct</span>'; }
+                    if (userAns === idx && idx !== q.a) { cls = 'wrong'; tag = '<span class="opt-tag">Your Ans</span>'; }
+                } else if (userAns === idx) {
+                    cls = 'selected';
+                }
+                optsHtml += `
+                    <div class="opt ${cls} ${locked ? 'locked' : ''}" onclick="selectOption(${idx})">
+                        <div class="opt-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="opt-text">${opt}</div>
+                        ${tag}
+                    </div>
+                `;
+            });
+
+            let solHtml = '';
+            if (isQuiz && locked) {
+                solHtml = `
+                    <div class="sol-box">
+                        <div class="sol-head"><i class="fas fa-lightbulb"></i> Solution &amp; Method</div>
+                        <div class="sol-content">${q.s}</div>
+                    </div>
+                `;
+            }
+
+            $('quizMain').innerHTML = `
+                <div class="q-card">
+                    <div class="q-top">
+                        <div class="q-num-badge"><i class="fas fa-hashtag"></i> Question ${i + 1} of ${QUESTIONS.length}</div>
+                    </div>
+                    <div class="q-text">${q.q}</div>
+                    <div class="opts">${optsHtml}</div>
+                    ${solHtml}
+                </div>
+            `;
+
+            $('prevBtn').disabled = i === 0;
+            $('nextLabel').textContent = i === QUESTIONS.length - 1 ? 'Finish' : 'Next';
+            updatePaletteGrid();
+        }
+
+        function selectOption(idx) {
+            const i = state.current;
+            if (state.mode === 'quiz' && state.locked[i]) return;
+
+            state.answers[i] = idx;
+            if (state.mode === 'quiz') {
+                state.locked[i] = true;
+                if (idx === QUESTIONS[i].a) toast('Correct! 🎉');
+                else toast('Incorrect');
+            }
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.current > 0) {
+                state.current--;
+                state.visited[state.current] = true;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (state.current < QUESTIONS.length - 1) {
+                state.current++;
+                state.visited[state.current] = true;
+                renderQuestion();
+            } else {
+                openSubmitModal();
+            }
+        }
+
+        function buildPalette() {
+            const grid = $('paletteGrid');
+            grid.innerHTML = '';
+            QUESTIONS.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.id = 'pal-' + i;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    state.current = i;
+                    state.visited[i] = true;
+                    closePalette();
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+            updatePaletteGrid();
+        }
+
+        function updatePaletteGrid() {
+            QUESTIONS.forEach((_, i) => {
+                const btn = $('pal-' + i);
+                if (!btn) return;
+                btn.className = 'pal-btn';
+                if (i === state.current) btn.classList.add('current');
+                if (state.answers[i] !== null) btn.classList.add('answered');
+            });
+        }
+
+        function openPalette() {
+            $('paletteDrawer').classList.add('open');$('paletteOverlay').classList.add('open');
+        }
+        function closePalette() {
+            $('paletteDrawer').classList.remove('open');$('paletteOverlay').classList.remove('open');
+        }
+
+        function openSubmitModal() {
+            const ans = state.answers.filter(a => a !== null).length;
+            $('modalAttempted').textContent = ans;
+            $('modalUnattempted').textContent = QUESTIONS.length - ans;
+            $('submitModal').classList.add('open');
+        }
+        function closeSubmitModal() {
+            $('submitModal').classList.remove('open');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            let correct = 0, wrong = 0;
+            state.answers.forEach((ans, i) => {
+                if (ans !== null) {
+                    if (ans === QUESTIONS[i].a) correct++;
+                    else wrong++;
+                }
+            });
+
+            const attempted = correct + wrong;
+            const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+
+            $('resultsInner').innerHTML = `
+                <div class="res-hero">
+                    <h2>Test Completed!</h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-top:2px;">Total Time: ${formatTime(state.elapsed)}</p>
+                </div>
+                <div class="res-score-card">
+                    <div class="res-score-val">${correct} <span>/ ${QUESTIONS.length}</span></div>
+                    <div class="res-score-lbl">Total Score</div>
+                </div>
+                <div class="res-grid">
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--green)">${correct}</div>
+                        <div class="res-item-lbl">Correct</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--red)">${wrong}</div>
+                        <div class="res-item-lbl">Wrong</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val">${attempted}</div>
+                        <div class="res-item-lbl">Attempted</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--primary)">${accuracy}%</div>
+                        <div class="res-item-lbl">Accuracy</div>
+                    </div>
+                </div>
+                <div class="res-actions">
+                    <button class="res-btn primary" onclick="location.reload()"><i class="fas fa-redo"></i> Retake Test</button>
+                </div>
+            `;
+            $('resultsScreen').classList.add('open');
+        }
+    </script>
+</body>
+</html>
